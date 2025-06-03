@@ -95,7 +95,34 @@ class Clinica {
         return this.psicologos.find(p => p.id === id) || null;
     }
 
-    // ========== MÉTODOS PARA PACIENTES ==========
+    /**
+     * Remove um psicólogo
+     * @param {string} id - ID do psicólogo
+     * @returns {Object} Resultado da operação
+     */
+    removerPsicologo(id) {
+        // Verificar se há consultas agendadas para este psicólogo
+        const consultasAgendadas = this.consultas.filter(c => 
+            c.psicologoId === id && c.status === 'agendada'
+        );
+        
+        if (consultasAgendadas.length > 0) {
+            return { 
+                sucesso: false, 
+                erros: ['Não é possível excluir psicólogo com consultas agendadas'] 
+            };
+        }
+
+        const index = this.psicologos.findIndex(p => p.id === id);
+        if (index === -1) {
+            return { sucesso: false, erros: ['Psicólogo não encontrado'] };
+        }
+
+        this.psicologos.splice(index, 1);
+        this.salvarDados();
+        return { sucesso: true };
+    }
+
 
     /**
      * Adiciona um novo paciente
@@ -152,7 +179,34 @@ class Clinica {
         );
     }
 
-    // ========== MÉTODOS PARA CONSULTAS ==========
+    /**
+     * Remove um paciente
+     * @param {string} id - ID do paciente
+     * @returns {Object} Resultado da operação
+     */
+    removerPaciente(id) {
+        // Verificar se há consultas agendadas para este paciente
+        const consultasAgendadas = this.consultas.filter(c => 
+            c.pacienteId === id && c.status === 'agendada'
+        );
+        
+        if (consultasAgendadas.length > 0) {
+            return { 
+                sucesso: false, 
+                erros: ['Não é possível excluir paciente com consultas agendadas'] 
+            };
+        }
+
+        const index = this.pacientes.findIndex(p => p.id === id);
+        if (index === -1) {
+            return { sucesso: false, erros: ['Paciente não encontrado'] };
+        }
+
+        this.pacientes.splice(index, 1);
+        this.salvarDados();
+        return { sucesso: true };
+    }
+
 
     /**
      * Adiciona uma nova consulta
@@ -224,7 +278,15 @@ class Clinica {
      * @returns {Array} Array de horários disponíveis
      */
     obterHorariosDisponiveis(psicologoId, data) {
-        const todosHorarios = Consulta.gerarHorariosDisponiveis();
+        const psicologo = this.buscarPsicologo(psicologoId);
+        if (!psicologo) {
+            return [];
+        }
+
+        // Obter horários disponíveis do psicólogo para esta data
+        const horariosDisponiveisPsicologo = psicologo.obterHorariosParaData(data);
+        
+        // Obter horários já ocupados
         const horariosOcupados = this.consultas
             .filter(c => 
                 c.psicologoId === psicologoId && 
@@ -233,7 +295,24 @@ class Clinica {
             )
             .map(c => c.horario);
 
-        return todosHorarios.filter(h => !horariosOcupados.includes(h));
+        // Retornar apenas os horários que o psicólogo trabalha e que não estão ocupados
+        return horariosDisponiveisPsicologo.filter(h => !horariosOcupados.includes(h));
+    }
+
+    /**
+     * Remove uma consulta
+     * @param {string} id - ID da consulta
+     * @returns {Object} Resultado da operação
+     */
+    removerConsulta(id) {
+        const index = this.consultas.findIndex(c => c.id === id);
+        if (index === -1) {
+            return { sucesso: false, erros: ['Consulta não encontrada'] };
+        }
+
+        this.consultas.splice(index, 1);
+        this.salvarDados();
+        return { sucesso: true };
     }
 }
 

@@ -96,7 +96,9 @@ function atualizarHorarios() {
     horariosDisponiveis.forEach(horario => {
         const option = document.createElement('option');
         option.value = horario;
-        option.textContent = ValidationUtils.formatarHorario(horario);
+        option.textContent = typeof ValidationUtils !== 'undefined' && ValidationUtils.formatarHorario 
+            ? ValidationUtils.formatarHorario(horario) 
+            : horario;
         selectHorario.appendChild(option);
     });
     
@@ -108,19 +110,37 @@ function atualizarHorarios() {
  */
 function exibirHorariosDisponiveis(horariosDisponiveis) {
     const container = document.getElementById('horariosDisponiveis');
-    const todosHorarios = Consulta.gerarHorariosDisponiveis();
+    const psicologoId = document.getElementById('psicologo').value;
+    const data = document.getElementById('data').value;
     
-    if (todosHorarios.length === 0) {
+    if (!psicologoId || !data) {
         container.innerHTML = '<p>Selecione um psicólogo e uma data para ver os horários.</p>';
         return;
     }
     
-    container.innerHTML = todosHorarios.map(horario => {
+    // Obter todos os horários que o psicólogo trabalha nesta data
+    const psicologo = clinica.buscarPsicologo(psicologoId);
+    if (!psicologo) {
+        container.innerHTML = '<p>Psicólogo não encontrado.</p>';
+        return;
+    }
+    
+    const horariosTrabalho = psicologo.obterHorariosParaData(data);
+    
+    if (horariosTrabalho.length === 0) {
+        container.innerHTML = '<p>Psicólogo não trabalha neste dia da semana.</p>';
+        return;
+    }
+    
+    container.innerHTML = horariosTrabalho.map(horario => {
         const disponivel = horariosDisponiveis.includes(horario);
         const classe = disponivel ? 'horario-item' : 'horario-item horario-ocupado';
         const status = disponivel ? 'Disponível' : 'Ocupado';
         
-        return `<span class="${classe}" title="${status}">${ValidationUtils.formatarHorario(horario)}</span>`;
+        const horarioFormatado = typeof ValidationUtils !== 'undefined' && ValidationUtils.formatarHorario 
+            ? ValidationUtils.formatarHorario(horario) 
+            : horario;
+        return `<span class="${classe}" title="${status}">${horarioFormatado}</span>`;
     }).join('');
 }
 

@@ -1,23 +1,22 @@
-
 /**
  * Funcionalidade da página de cadastro de pacientes
  */
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formPaciente');
     const campoBusca = document.getElementById('buscaPaciente');
-    
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const nome = document.getElementById('nome').value.trim();
         const cpf = document.getElementById('cpf').value.trim();
         const email = document.getElementById('email').value.trim();
         const telefone = document.getElementById('telefone').value.trim();
         const dataNascimento = document.getElementById('dataNascimento').value;
-        
+
         const paciente = new Paciente(nome, cpf, email, telefone, dataNascimento);
         const resultado = clinica.adicionarPaciente(paciente);
-        
+
         if (resultado.sucesso) {
             mostrarMensagem('Paciente cadastrado com sucesso!', 'success');
             form.reset();
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mostrarMensagem('Erro: ' + resultado.erros.join(', '), 'error');
         }
     });
-    
+
     // Busca em tempo real
     campoBusca.addEventListener('input', function() {
         const termo = this.value.trim();
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             listarPacientes();
         }
     });
-    
+
     // Máscara para CPF
     document.getElementById('cpf').addEventListener('input', function() {
         let value = this.value.replace(/[^\d]/g, '');
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = value;
         }
     });
-    
+
     // Carregar lista inicial
     listarPacientes();
 });
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function listarPacientes() {
     const lista = document.getElementById('listaPacientes');
     const pacientes = clinica.listarPacientes();
-    
+
     exibirListaPacientes(pacientes, lista);
 }
 
@@ -66,7 +65,7 @@ function listarPacientes() {
 function buscarPacientes(termo) {
     const lista = document.getElementById('listaPacientes');
     const pacientes = clinica.buscarPacientesPorNome(termo);
-    
+
     exibirListaPacientes(pacientes, lista);
 }
 
@@ -78,7 +77,7 @@ function exibirListaPacientes(pacientes, elemento) {
         elemento.innerHTML = '<p>Nenhum paciente encontrado.</p>';
         return;
     }
-    
+
     elemento.innerHTML = pacientes.map(paciente => `
         <div class="item-lista">
             <h4>${paciente.nome}</h4>
@@ -88,6 +87,9 @@ function exibirListaPacientes(pacientes, elemento) {
             <p><strong>Data de Nascimento:</strong> ${ValidationUtils.formatarData(paciente.dataNascimento)}</p>
             <p><strong>Idade:</strong> ${paciente.calcularIdade()} anos</p>
             <p><strong>Cadastrado em:</strong> ${ValidationUtils.formatarData(paciente.dataCadastro.split('T')[0])}</p>
+            <div class="acoes-item">
+                <button onclick="excluirPaciente('${paciente.id}')" class="btn-excluir">Excluir</button>
+            </div>
         </div>
     `).join('');
 }
@@ -101,16 +103,38 @@ function mostrarMensagem(mensagem, tipo) {
     if (mensgemAnterior) {
         mensgemAnterior.remove();
     }
-    
+
     const div = document.createElement('div');
     div.className = `alert alert-${tipo}`;
     div.textContent = mensagem;
-    
+
     const form = document.getElementById('formPaciente');
     form.parentNode.insertBefore(div, form);
-    
+
     // Remove a mensagem após 5 segundos
     setTimeout(() => {
         div.remove();
     }, 5000);
+}
+
+/**
+ * Exclui um paciente
+ */
+function excluirPaciente(id) {
+    const paciente = clinica.buscarPaciente(id);
+    if (!paciente) {
+        mostrarMensagem('Paciente não encontrado!', 'error');
+        return;
+    }
+
+    if (confirm(`Tem certeza que deseja excluir o paciente "${paciente.nome}"?`)) {
+        const resultado = clinica.removerPaciente(id);
+        
+        if (resultado.sucesso) {
+            mostrarMensagem('Paciente excluído com sucesso!', 'success');
+            listarPacientes();
+        } else {
+            mostrarMensagem('Erro: ' + resultado.erros.join(', '), 'error');
+        }
+    }
 }

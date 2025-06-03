@@ -1,3 +1,5 @@
+/* Importar fonte Montserrat do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 /* Reset e estilos globais */
 * {
@@ -7,7 +9,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #f5f5f5;
     color: #333;
     line-height: 1.6;
@@ -278,3 +280,100 @@ button[type="submit"]:hover {
         width: 100%;
     }
 }
+
+/* Estilos para checkboxes de dias e horários */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    margin-bottom: 0;
+}
+
+.horarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.horario-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+}
+
+.horario-checkbox:hover {
+    background-color: #e3f2fd;
+}
+
+.horario-checkbox input[type="checkbox"] {
+    margin-right: 5px;
+    margin-bottom: 0;
+}
+
+.horario-checkbox input[type="checkbox"]:checked + span,
+.horario-checkbox:has(input[type="checkbox"]:checked) {
+    background-color: #2196f3;
+    color: white;
+    border-color: #2196f3;
+}
+
+/* Fim dos estilos existentes */
+.btn-cancelar {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #c0392b;
+        color: white;
+    }
+
+    .btn-pequeno:hover {
+        opacity: 0.8;
+    }
+
+    .acoes-item {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .acoes-item .btn-excluir {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #c0392b;
+        color: white;
+    }
+
+    .acoes-item .btn-excluir:hover {
+        background-color: #a93226;
+    }

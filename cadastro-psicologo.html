@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,7 +13,7 @@
             <button onclick="window.location.href='landing.html'">Voltar</button>
         </div>
     </header>
-    
+
     <main class="container">
         <form id="formPsicologo" class="form-cadastro">
             <div class="form-group">
@@ -37,15 +36,33 @@
                 <label for="especialidade">Especialidade:</label>
                 <input type="text" id="especialidade" name="especialidade" required>
             </div>
+            <div class="form-group">
+                <label for="diasDisponiveis">Dias Disponíveis:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="diasDisponiveis" value="1"> Segunda-feira</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="2"> Terça-feira</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="3"> Quarta-feira</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="4"> Quinta-feira</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="5"> Sexta-feira</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="6"> Sábado</label>
+                    <label><input type="checkbox" name="diasDisponiveis" value="0"> Domingo</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="horariosDisponiveis">Horários Disponíveis:</label>
+                <div class="horarios-grid" id="horariosGrid">
+                    <!-- Horários serão gerados dinamicamente -->
+                </div>
+            </div>
             <button type="submit">Cadastrar Psicólogo</button>
         </form>
-        
+
         <div class="lista-cadastros">
             <h3>Psicólogos Cadastrados</h3>
             <div id="listaPsicologos"></div>
         </div>
     </main>
-    
+
     <script src="js/models/Psicologo.js"></script>
     <script src="js/models/Paciente.js"></script>
     <script src="js/models/Consulta.js"></script>

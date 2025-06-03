@@ -152,10 +152,13 @@ class Consulta {
      */
     static gerarHorariosDisponiveis() {
         const horarios = [];
-        // Horários de 8h às 18h, de hora em hora
-        for (let i = 8; i <= 18; i++) {
+        // Horários de 8h às 18h, de 30 em 30 minutos
+        for (let i = 8; i <= 17; i++) {
             horarios.push(`${i.toString().padStart(2, '0')}:00`);
+            horarios.push(`${i.toString().padStart(2, '0')}:30`);
         }
+        // Adicionar último horário do dia
+        horarios.push('18:00');
         return horarios;
     }
 }

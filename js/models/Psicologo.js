@@ -11,13 +11,15 @@ class Psicologo {
      * @param {string} telefone - Telefone do psicólogo
      * @param {string} especialidade - Especialidade do psicólogo
      */
-    constructor(nome, crp, email, telefone, especialidade) {
+    constructor(nome, crp, email, telefone, especialidade, diasDisponiveis = [], horariosDisponiveis = []) {
         this.id = this.gerarId();
         this.nome = nome;
         this.crp = crp;
         this.email = email;
         this.telefone = telefone;
         this.especialidade = especialidade;
+        this.diasDisponiveis = diasDisponiveis; // Array de números (0=domingo, 1=segunda, etc.)
+        this.horariosDisponiveis = horariosDisponiveis; // Array de horários no formato "HH:MM"
         this.dataCadastro = new Date().toISOString();
     }
 
@@ -41,6 +43,8 @@ class Psicologo {
             email: this.email,
             telefone: this.telefone,
             especialidade: this.especialidade,
+            diasDisponiveis: this.diasDisponiveis,
+            horariosDisponiveis: this.horariosDisponiveis,
             dataCadastro: this.dataCadastro
         };
     }
@@ -56,7 +60,9 @@ class Psicologo {
             json.crp,
             json.email,
             json.telefone,
-            json.especialidade
+            json.especialidade,
+            json.diasDisponiveis || [],
+            json.horariosDisponiveis || []
         );
         psicologo.id = json.id;
         psicologo.dataCadastro = json.dataCadastro;
@@ -90,9 +96,42 @@ class Psicologo {
             erros.push('Especialidade deve ter pelo menos 3 caracteres');
         }
 
+        if (!this.diasDisponiveis || this.diasDisponiveis.length === 0) {
+            erros.push('Pelo menos um dia deve ser selecionado');
+        }
+
+        if (!this.horariosDisponiveis || this.horariosDisponiveis.length === 0) {
+            erros.push('Pelo menos um horário deve ser selecionado');
+        }
+
         return {
             valido: erros.length === 0,
             erros: erros
         };
+    }
+
+    /**
+     * Verifica se o psicólogo está disponível em determinado dia da semana e horário
+     * @param {string} data - Data no formato YYYY-MM-DD
+     * @param {string} horario - Horário no formato HH:MM
+     * @returns {boolean} True se disponível
+     */
+    estaDisponivel(data, horario) {
+        const diaSemana = new Date(data).getDay();
+        return this.diasDisponiveis.includes(diaSemana) && 
+               this.horariosDisponiveis.includes(horario);
+    }
+
+    /**
+     * Obtém os horários disponíveis para uma data específica
+     * @param {string} data - Data no formato YYYY-MM-DD
+     * @returns {Array} Array de horários disponíveis
+     */
+    obterHorariosParaData(data) {
+        const diaSemana = new Date(data).getDay();
+        if (!this.diasDisponiveis.includes(diaSemana)) {
+            return [];
+        }
+        return this.horariosDisponiveis;
     }
 }

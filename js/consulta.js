@@ -1,11 +1,10 @@
-
 /**
  * Funcionalidade da página de consultas
  */
 document.addEventListener('DOMContentLoaded', function() {
     // Carregar filtros
     carregarFiltros();
-    
+
     // Carregar consultas
     listarConsultas();
 });
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function carregarFiltros() {
     const filtroPsicologo = document.getElementById('filtroPsicologo');
     const filtroPaciente = document.getElementById('filtroPaciente');
-    
+
     // Carregar psicólogos
     const psicologos = clinica.listarPsicologos();
     filtroPsicologo.innerHTML = '<option value="">Todos os psicólogos</option>';
@@ -26,7 +25,7 @@ function carregarFiltros() {
         option.textContent = psicologo.nome;
         filtroPsicologo.appendChild(option);
     });
-    
+
     // Carregar pacientes
     const pacientes = clinica.listarPacientes();
     filtroPaciente.innerHTML = '<option value="">Todos os pacientes</option>';
@@ -44,7 +43,7 @@ function carregarFiltros() {
 function listarConsultas() {
     const lista = document.getElementById('listaConsultas');
     const consultas = clinica.listarConsultas();
-    
+
     exibirConsultas(consultas, lista);
 }
 
@@ -55,19 +54,19 @@ function aplicarFiltros() {
     const filtroPsicologo = document.getElementById('filtroPsicologo').value;
     const filtroPaciente = document.getElementById('filtroPaciente').value;
     const lista = document.getElementById('listaConsultas');
-    
+
     let consultas = clinica.listarConsultas();
-    
+
     // Filtrar por psicólogo
     if (filtroPsicologo) {
         consultas = consultas.filter(c => c.psicologoId === filtroPsicologo);
     }
-    
+
     // Filtrar por paciente
     if (filtroPaciente) {
         consultas = consultas.filter(c => c.pacienteId === filtroPaciente);
     }
-    
+
     exibirConsultas(consultas, lista);
 }
 
@@ -79,22 +78,22 @@ function exibirConsultas(consultas, elemento) {
         elemento.innerHTML = '<p>Nenhuma consulta encontrada.</p>';
         return;
     }
-    
+
     // Ordenar consultas por data e horário
     consultas.sort((a, b) => {
         const dataA = new Date(`${a.data}T${a.horario}`);
         const dataB = new Date(`${b.data}T${b.horario}`);
         return dataA - dataB;
     });
-    
+
     elemento.innerHTML = consultas.map(consulta => {
         const paciente = clinica.buscarPaciente(consulta.pacienteId);
         const psicologo = clinica.buscarPsicologo(consulta.psicologoId);
-        
+
         const statusClass = getStatusClass(consulta.status);
         const isPassado = consulta.isPassado();
         const isHoje = consulta.isHoje();
-        
+
         return `
             <div class="item-lista ${statusClass}">
                 <h4>Consulta - ${ValidationUtils.formatarData(consulta.data)} às ${ValidationUtils.formatarHorario(consulta.horario)}</h4>
@@ -110,6 +109,7 @@ function exibirConsultas(consultas, elemento) {
                         <button onclick="marcarRealizada('${consulta.id}')" class="btn-pequeno btn-sucesso">Marcar Realizada</button>
                         <button onclick="cancelarConsulta('${consulta.id}')" class="btn-pequeno btn-cancelar">Cancelar</button>
                     ` : ''}
+					<button onclick="excluirConsulta('${consulta.id}')" class="btn-pequeno btn-excluir">Excluir</button>
                 </div>
             </div>
         `;
@@ -173,6 +173,33 @@ function cancelarConsulta(consultaId) {
 }
 
 /**
+ * Exclui uma consulta
+ */
+function excluirConsulta(consultaId) {
+    const consulta = clinica.consultas.find(c => c.id === consultaId);
+    if (!consulta) {
+        mostrarMensagem('Consulta não encontrada!', 'error');
+        return;
+    }
+
+    const paciente = clinica.buscarPaciente(consulta.pacienteId);
+    const psicologo = clinica.buscarPsicologo(consulta.psicologoId);
+
+    const nomeConsulta = `${paciente ? paciente.nome : 'Paciente'} com ${psicologo ? psicologo.nome : 'Psicólogo'} em ${ValidationUtils.formatarData(consulta.data)}`;
+
+    if (confirm(`Tem certeza que deseja excluir permanentemente a consulta:\n${nomeConsulta}?`)) {
+        const resultado = clinica.removerConsulta(consultaId);
+
+        if (resultado.sucesso) {
+            mostrarMensagem('Consulta excluída com sucesso!', 'success');
+            aplicarFiltros();
+        } else {
+            mostrarMensagem('Erro: ' + resultado.erros.join(', '), 'error');
+        }
+    }
+}
+
+/**
  * Mostra mensagem de feedback para o usuário
  */
 function mostrarMensagem(mensagem, tipo) {
@@ -181,14 +208,14 @@ function mostrarMensagem(mensagem, tipo) {
     if (mensgemAnterior) {
         mensgemAnterior.remove();
     }
-    
+
     const div = document.createElement('div');
     div.className = `alert alert-${tipo}`;
     div.textContent = mensagem;
-    
+
     const container = document.querySelector('.container');
     container.insertBefore(div, container.firstChild);
-    
+
     // Remove a mensagem após 5 segundos
     setTimeout(() => {
         div.remove();
@@ -201,21 +228,21 @@ style.textContent = `
     .status-agendada {
         border-left-color: #3498db;
     }
-    
+
     .status-realizada {
         border-left-color: #27ae60;
     }
-    
+
     .status-cancelada {
         border-left-color: #e74c3c;
     }
-    
+
     .acoes-consulta {
         margin-top: 10px;
         display: flex;
         gap: 10px;
     }
-    
+
     .btn-pequeno {
         padding: 5px 10px;
         font-size: 0.8rem;
@@ -223,17 +250,22 @@ style.textContent = `
         border-radius: 4px;
         cursor: pointer;
     }
-    
+
     .btn-sucesso {
         background-color: #27ae60;
         color: white;
     }
-    
+
     .btn-cancelar {
         background-color: #e74c3c;
         color: white;
     }
-    
+
+	.btn-excluir {
+        background-color: #c0392b; /* Cor vermelha para exclusão */
+        color: white;
+    }
+
     .btn-pequeno:hover {
         opacity: 0.8;
     }
