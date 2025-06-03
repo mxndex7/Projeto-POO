@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mente Clara - Sistema</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1>Clínica Mente Clara</h1>
+            <div class="user-info">
+                <span id="usuarioLogado"></span>
+                <button id="btnLogout">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="menu-grid">
+            <div class="menu-item" onclick="window.location.href='cadastro-psicologo.html'">
+                <h3>Psicólogos</h3>
+                <p>Cadastrar e gerenciar psicólogos</p>
+            </div>
+            <div class="menu-item" onclick="window.location.href='cadastro-paciente.html'">
+                <h3>Pacientes</h3>
+                <p>Cadastrar e gerenciar pacientes</p>
+            </div>
+            <div class="menu-item" onclick="window.location.href='agendamentos.html'">
+                <h3>Agendamentos</h3>
+                <p>Agendar novas consultas</p>
+            </div>
+            <div class="menu-item" onclick="window.location.href='consultas.html'">
+                <h3>Consultas</h3>
+                <p>Visualizar consultas agendadas</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/models/Psicologo.js"></script>
+    <script src="js/models/Paciente.js"></script>
+    <script src="js/models/Consulta.js"></script>
+    <script src="js/models/Clinica.js"></script>
+    <script src="js/utils/validation.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/landing.js"></script>
+</body>
+</html>

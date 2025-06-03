@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos - Mente Clara</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1>Agendamento de Consultas</h1>
+            <button onclick="window.location.href='landing.html'">Voltar</button>
+        </div>
+    </header>
+    
+    <main class="container">
+        <form id="formAgendamento" class="form-cadastro">
+            <div class="form-group">
+                <label for="paciente">Paciente:</label>
+                <select id="paciente" name="paciente" required>
+                    <option value="">Selecione um paciente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="psicologo">Psicólogo:</label>
+                <select id="psicologo" name="psicologo" required>
+                    <option value="">Selecione um psicólogo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+            <div class="form-group">
+                <label for="horario">Horário:</label>
+                <select id="horario" name="horario" required>
+                    <option value="">Selecione um horário</option>
+                </select>
+            </div>
+            <button type="submit">Agendar Consulta</button>
+        </form>
+        
+        <div class="horarios-disponiveis">
+            <h3>Horários Disponíveis</h3>
+            <div id="horariosDisponiveis"></div>
+        </div>
+    </main>
+    
+    <script src="js/models/Consulta.js"></script>
+    <script src="js/models/Paciente.js"></script>
+    <script src="js/models/Psicologo.js"></script>
+    <script src="js/models/Clinica.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/agendamento.js"></script>
+</body>
+</html>

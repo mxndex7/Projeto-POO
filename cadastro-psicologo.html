@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Psicólogos - Mente Clara</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1>Cadastro de Psicólogos</h1>
+            <button onclick="window.location.href='landing.html'">Voltar</button>
+        </div>
+    </header>
+    
+    <main class="container">
+        <form id="formPsicologo" class="form-cadastro">
+            <div class="form-group">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="crp">CRP:</label>
+                <input type="text" id="crp" name="crp" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="telefone" name="telefone" required>
+            </div>
+            <div class="form-group">
+                <label for="especialidade">Especialidade:</label>
+                <input type="text" id="especialidade" name="especialidade" required>
+            </div>
+            <button type="submit">Cadastrar Psicólogo</button>
+        </form>
+        
+        <div class="lista-cadastros">
+            <h3>Psicólogos Cadastrados</h3>
+            <div id="listaPsicologos"></div>
+        </div>
+    </main>
+    
+    <script src="js/models/Psicologo.js"></script>
+    <script src="js/models/Paciente.js"></script>
+    <script src="js/models/Consulta.js"></script>
+    <script src="js/models/Clinica.js"></script>
+    <script src="js/utils/validation.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/psicologo.js"></script>
+</body>
+</html>
