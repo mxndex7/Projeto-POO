@@ -54,7 +54,7 @@ Sistema de gestão para clínica de psicologia, desenvolvido com tecnologias web
 
 ## Demonstração
 
-O sistema pode ser acessado em: ...
+O sistema pode ser acessado em: https://clinicamenteclara.netlify.app
 
 ## Arquitetura do Projeto
 
